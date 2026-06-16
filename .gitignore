@@ -185,6 +185,7 @@ allure-report/
 swagger-coverage-output/
 swagger-doc-dm-api-account.json
 swagger-coverage-report-dm-api-account.html
+swagger-coverage-report.html
 
 
 # Abstra
