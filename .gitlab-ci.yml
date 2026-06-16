@@ -1,0 +1,86 @@
+stages:
+    - testing
+    - coverage
+    - reports
+
+run_tests:
+    stage: testing
+    tags:
+        - docker
+    image: python:3.10-slim
+    before_script:
+        - apt-get update && apt-get install -y --no-install-recommends default-jre-headless
+        - pip install --upgrade pip
+        - pip install -r requirements.txt
+    script:
+        - pytest --alluredir=./allure-results tests
+    allow_failure: true
+    artifacts:
+        when: always
+        paths:
+            - ./allure-results
+            - ./swagger-coverage-output
+
+allure:
+    stage: reports
+    tags:
+        - docker
+    image: frankescobar/allure-docker-service
+    script:
+        - allure generate -c ./allure-results -o ./allure-report
+    artifacts:
+        paths:
+            - ./allure-results
+            - ./allure-report
+        expire_in: 1 day
+    rules:
+        - when: always
+
+pages:
+    stage: reports
+    tags:
+        - docker
+    needs:
+        - job: allure
+          artifacts: true
+    script:
+        - mkdir -p public
+        - cp -r ./allure-report/. public/
+    artifacts:
+        paths:
+            - public
+    rules:
+        - when: always
+
+coverage:
+    stage: coverage
+    tags:
+        - docker
+    image: adoptopenjdk/openjdk11
+    before_script:
+        - apt-get update && apt-get install -y wget unzip
+        - wget https://github.com/viclovsky/swagger-coverage/releases/download/1.5.0/swagger-coverage-1.5.0.zip
+        - unzip swagger-coverage-1.5.0.zip
+    script:
+        - ./swagger-coverage-commandline-1.5.0/bin/swagger-coverage-commandline -s http://185.185.143.231:5051/swagger/Account/swagger.json -i swagger-coverage-output
+    allow_failure: true
+    artifacts:
+        when: always
+        paths:
+            - ./swagger-coverage-report.html
+        expire_in: 1 day
+
+send coverage:
+    stage: coverage
+    tags:
+        - docker
+    needs:
+        - job: coverage
+          artifacts: true
+    image: python:3.10-slim
+    before_script:
+        - pip install --upgrade pip
+        - pip install -r requirements.txt
+    script:
+        - python -m packages.notifier.bot
+    allow_failure: true
