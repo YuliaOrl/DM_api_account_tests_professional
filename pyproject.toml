@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "dm-api-account-tests-prof"
+version = "0.1.0"
+description = ""
+authors = ["Yulia <orbitalik32@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.34.2"
+swagger-coverage = {url = "https://github.com/YuliaOrl/swagger-coverage-py/archive/refs/heads/master.zip"}
+aiohttp = "^3.14.1"
+pydantic = "^2.13.4"
+faker = "^40.23.0"
+pyhamcrest = "^2.1.0"
+pytest = "^9.1.0"
+allure-pytest = "^2.16.0"
+structlog = "^26.1.0"
+pyyaml = "^6.0.3"
+curlify = "^3.0.0"
+rootpath = "0.1.0"
+pytelegrambotapi = "^4.34.0"
+pytest-telegram-notifier = "^1.4.0"
+environs = "^15.0.1"
+vyper-config = "^1.2.1"
+python-dotenv = "^1.2.2"
+six = "^1.17.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
