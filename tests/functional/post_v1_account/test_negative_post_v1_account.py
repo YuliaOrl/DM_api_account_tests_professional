@@ -32,7 +32,7 @@ class TestsNegativePostV1Account:
             [{"Email": ["Invalid"]}, Registration(login=user.login, email=user.email.replace('@', ''), password=user.password)],
             [{"Login": ["Short"]}, Registration(login=user.login[0], email=user.email, password=user.password)],
     ])
-    def test_negative_post_v1_account(self, account_helper, error_message, registration):
+    async def test_negative_post_v1_account(self, account_helper, error_message, registration):
         allure.dynamic.description(f'Тест проверяет ожидаемый статус код 400 и сообщение об ошибке {error_message} '
                                    f'от сервера при регистрации нового пользователя, если использовать '
                                    f'невалидный {next(iter(error_message)).lower()}.')
@@ -41,4 +41,4 @@ class TestsNegativePostV1Account:
                 expected_title_message='Validation failed',
                 expected_error_message=error_message
             ):
-            account_helper.dm_account_api.account_api.post_v1_account(registration=registration)
+            await account_helper.dm_account_api.account_api.post_v1_account(registration=registration)

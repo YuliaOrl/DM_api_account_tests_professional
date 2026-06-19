@@ -10,5 +10,5 @@ class TestsDeleteV1AccountLogin:
     @allure.title('Проверка выхода авторизованного пользователя из аккаунта')
     @allure.severity(allure.severity_level.NORMAL)
     @allure.description('Тест проверяет успешный выход пользователя из аккаунта.')
-    def test_delete_v1_account_login(self, auth_account_helper):
-        auth_account_helper.user_logout()
+    async def test_delete_v1_account_login(self, auth_account_helper):
+        await auth_account_helper.user_logout()

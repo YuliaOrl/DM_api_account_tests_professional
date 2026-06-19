@@ -12,12 +12,12 @@ from services.api_mailhog import MailHogApi
 
 
 def retrier(function):
-    def wrapper(*args, **kwargs):
+    async def wrapper(*args, **kwargs):
         token = None
         cnt = 1
         while token is None:
             print(f'Попытка получения токена номер {cnt}!')
-            token = function(*args, **kwargs)
+            token = await function(*args, **kwargs)
             cnt += 1
             if cnt == 6:
                 raise AssertionError('Превышено количество попыток получения токена активации!')
@@ -33,13 +33,13 @@ class AccountHelper:
         self.mailhog = mailhog
 
     @allure.step('Авторизация нового пользователя')
-    def auth_client(self, login: str, password: str, validate_response=False):
+    async def auth_client(self, login: str, password: str, validate_response=False):
         login_credentials = LoginCredentials(
             login=login,
             password=password,
             remember_me=True
         )
-        response = self.dm_account_api.login_api.post_v1_account_login(
+        response = await self.dm_account_api.login_api.post_v1_account_login(
             login_credentials=login_credentials,
             validate_response=validate_response
         )
@@ -50,26 +50,26 @@ class AccountHelper:
         self.dm_account_api.login_api.set_headers(token)
 
     @allure.step('Регистрация нового пользователя')
-    def register_new_user(self, login: str, password: str, email: str):
+    async def register_new_user(self, login: str, password: str, email: str):
         user = User(login=login, password=password, email=email)
         registration = Registration(
             login=login,
             email=email,
             password=password
         )
-        response = self.dm_account_api.account_api.post_v1_account(registration=registration)
+        response = await self.dm_account_api.account_api.post_v1_account(registration=registration)
         assert response.status_code == 201, f'Пользователь не был создан {response.json()}'
-        self.user_activation(login=login)
+        await self.user_activation(login=login)
         return user
 
     @allure.step('Авторизация пользователя')
-    def user_login(self, login: str, password: str, remember_me: bool = True, validate_response=True, validate_headers=False):
+    async def user_login(self, login: str, password: str, remember_me: bool = True, validate_response=True, validate_headers=False):
         login_credentials = LoginCredentials(
             login=login,
             password=password,
             remember_me=remember_me
         )
-        response = self.dm_account_api.login_api.post_v1_account_login(
+        response = await self.dm_account_api.login_api.post_v1_account_login(
             login_credentials=login_credentials,
             validate_response=validate_response
         )
@@ -78,28 +78,28 @@ class AccountHelper:
         return response
 
     @allure.step('Получение информации о текущем пользователе')
-    def get_current_user(self):
-        response = self.dm_account_api.account_api.get_v1_account()
+    async def get_current_user(self):
+        response = await self.dm_account_api.account_api.get_v1_account()
         return response
 
     @allure.step('Изменение емейла')
-    def change_email(self, login: str, password: str, new_email: str):
+    async def change_email(self, login: str, password: str, new_email: str):
         change_email = ChangeEmail(
             login=login,
             password=password,
             email=new_email
         )
-        response = self.dm_account_api.account_api.put_v1_account_email(change_email=change_email)
+        response = await self.dm_account_api.account_api.put_v1_account_email(change_email=change_email)
         return response
 
     @allure.step('Изменение пароля')
-    def change_password(self, login: str, password: str, email: str, new_password: str):
+    async def change_password(self, login: str, password: str, email: str, new_password: str):
         reset_password = ResetPassword(
             login=login,
             email=email
         )
-        self.dm_account_api.account_api.post_v1_account_password(reset_password=reset_password)
-        token = self.get_activation_token_by_login(login, confirm='password')
+        await self.dm_account_api.account_api.post_v1_account_password(reset_password=reset_password)
+        token = await self.get_activation_token_by_login(login, confirm='password')
         assert token is not None, f'Токен для пользователя {login} не был получен'
         change_password = ChangePassword(
             login=login,
@@ -107,36 +107,36 @@ class AccountHelper:
             old_password=password,
             new_password=new_password
         )
-        response = self.dm_account_api.account_api.put_v1_account_password(change_password=change_password)
+        response = await self.dm_account_api.account_api.put_v1_account_password(change_password=change_password)
         return response
 
     @allure.step('Активация пользователя')
-    def user_activation(self, login: str):
-        token = self.get_activation_token_by_login(login)
+    async def user_activation(self, login: str):
+        token = await self.get_activation_token_by_login(login)
         assert token is not None, f'Токен для пользователя {login} не был получен'
-        response = self.dm_account_api.account_api.put_v1_account_token(token=token)
+        response = await self.dm_account_api.account_api.put_v1_account_token(token=token)
         return response
 
     @allure.step('Выход пользователя из аккаунта')
-    def user_logout(self):
-        response = self.dm_account_api.login_api.delete_v1_account_login()
+    async def user_logout(self):
+        response = await self.dm_account_api.login_api.delete_v1_account_login()
         assert response.status_code == 204, f'Выход из аккаунта не был выполнен'
         return response
 
     @allure.step('Выход пользователя из аккаунта на всех устройствах')
-    def user_logout_all(self):
-        response = self.dm_account_api.login_api.delete_v1_account_login_all()
+    async def user_logout_all(self):
+        response = await self.dm_account_api.login_api.delete_v1_account_login_all()
         assert response.status_code == 204, f'Выход из аккаунта на всех устройствах не был выполнен'
         return response
 
     @allure.step('Получение активационного токена по логину')
     @retrier
-    def get_activation_token_by_login(self, login, confirm='activate'):
+    async def get_activation_token_by_login(self, login, confirm='activate'):
         conf_token = {
             'activate': 'ConfirmationLinkUrl',
             'password': 'ConfirmationLinkUri'
         }
-        response = self.mailhog.mailhog_api.get_api_v2_messages()
+        response = await self.mailhog.mailhog_api.get_api_v2_messages()
         for item in response.json().get('items', []):
             user_data = loads(item.get('Content', {}).get('Body'))
             if user_data.get('Login') == login:
