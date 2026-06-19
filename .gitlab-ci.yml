@@ -11,9 +11,10 @@ run_tests:
     before_script:
         - apt-get update && apt-get install -y --no-install-recommends default-jre-headless
         - pip install --upgrade pip
-        - pip install -r requirements.txt
+        - pip install poetry
+        - poetry install --no-root
     script:
-        - pytest --alluredir=./allure-results tests
+        - poetry run pytest --alluredir=./allure-results tests
     allow_failure: true
     artifacts:
         when: always
