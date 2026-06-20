@@ -11,28 +11,28 @@ class Rating(BaseModel):
 
 
 class UserRole(str, Enum):
-    GUEST = 'Guest'
-    PLAYER = 'Player'
-    ADMINISTRATOR = 'Administrator'
-    NANNYMODERATOR = 'NannyModerator'
-    REGULARMODERATOR = 'RegularModerator'
-    SENIORMODERATOR = 'SeniorModerator'
+    GUEST = "Guest"
+    PLAYER = "Player"
+    ADMINISTRATOR = "Administrator"
+    NANNYMODERATOR = "NannyModerator"
+    REGULARMODERATOR = "RegularModerator"
+    SENIORMODERATOR = "SeniorModerator"
 
 
 class User(BaseModel):
     login: str = Field(None)
     roles: List[UserRole]
-    medium_picture_url: str = Field(None, alias='mediumPictureUrl')
-    small_picture_url: str = Field(None, alias='smallPictureUrl')
-    status: str = Field(None, alias='status')
+    medium_picture_url: str = Field(None, alias="mediumPictureUrl")
+    small_picture_url: str = Field(None, alias="smallPictureUrl")
+    status: str = Field(None, alias="status")
     rating: Rating
-    online: datetime = Field(None, alias='online')
-    name: str = Field(None, alias='name')
-    location: str = Field(None, alias='location')
+    online: datetime = Field(None, alias="online")
+    name: str = Field(None, alias="name")
+    location: str = Field(None, alias="location")
     registration: datetime = Field(None)
 
 
 class UserEnvelope(BaseModel):
-    model_config = ConfigDict(extra='forbid')
+    model_config = ConfigDict(extra="forbid")
     resource: Optional[User] = None
     metadata: Optional[Union[str, Dict[str, Any]]] = None

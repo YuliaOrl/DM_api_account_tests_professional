@@ -3,22 +3,26 @@ from telebot import TeleBot
 from vyper import v
 
 
-config = Path(__file__).parent.joinpath('../../').joinpath('config')
-v.set_config_name('stg')
+config = Path(__file__).parent.joinpath("../../").joinpath("config")
+v.set_config_name("stg")
 v.add_config_path(config)
 v.read_in_config()
 
 
 def send_file() -> None:
-    telegram_bot = TeleBot(v.get('telegram.token'))
-    file_path = Path(__file__).parent.joinpath('../../').joinpath('swagger-coverage-report.html')
-    with open(file_path, 'rb') as document:
+    telegram_bot = TeleBot(v.get("telegram.token"))
+    file_path = (
+        Path(__file__)
+        .parent.joinpath("../../")
+        .joinpath("swagger-coverage-report.html")
+    )
+    with open(file_path, "rb") as document:
         telegram_bot.send_document(
-            v.get('telegram.chat_id'),
+            v.get("telegram.chat_id"),
             document=document,
-            caption='coverage',
+            caption="coverage",
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     send_file()
