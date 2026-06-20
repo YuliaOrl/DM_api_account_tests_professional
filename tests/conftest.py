@@ -34,7 +34,9 @@ options = (
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_swagger_coverage():
-    reporter = CoverageReporter(api_name="dm-api-account", host="http://185.185.143.231:5051")
+    reporter = CoverageReporter(
+        api_name="dm-api-account", host="http://185.185.143.231:5051"
+    )
     reporter.cleanup_input_files()
     reporter.setup("/swagger/Account/swagger.json")
     yield
@@ -54,7 +56,7 @@ def set_config(request):
     os.environ["TELEGRAM_BOT_ACCESS_TOKEN"] = v.get("telegram.token")
     request.config.stash["telegram-notifier-addfields"]["enviroment"] = config_name
     request.config.stash["telegram-notifier-addfields"]["report"] = (
-        "https://api-account-tests-professional-700056.gitlab.io"
+        "https://dm-api-account-tests-prof-397906.gitlab.io"
     )
 
 
@@ -66,14 +68,18 @@ def pytest_addoption(parser):
 
 @pytest.fixture()
 def account_api():
-    dm_api_configuration = DMApiConfiguration(host=v.get("service.dm_api_account"), disable_log=False)
+    dm_api_configuration = DMApiConfiguration(
+        host=v.get("service.dm_api_account"), disable_log=False
+    )
     account = DMApiAccount(configuration=dm_api_configuration)
     return account
 
 
 @pytest.fixture()
 def mailhog_api():
-    mailhog_configuration = MailhogConfiguration(host=v.get("service.mailhog"), disable_log=True)
+    mailhog_configuration = MailhogConfiguration(
+        host=v.get("service.mailhog"), disable_log=True
+    )
     mailhog_client = MailHogApi(configuration=mailhog_configuration)
     return mailhog_client
 
@@ -92,7 +98,9 @@ async def auth_account_helper(account_api, mailhog_api, prepare_user):
         password=prepare_user.password,
         email=prepare_user.email,
     )
-    await auth_account_helper.auth_client(login=prepare_user.login, password=prepare_user.password)
+    await auth_account_helper.auth_client(
+        login=prepare_user.login, password=prepare_user.password
+    )
     return auth_account_helper
 
 

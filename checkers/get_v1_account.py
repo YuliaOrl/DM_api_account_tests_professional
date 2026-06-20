@@ -66,9 +66,13 @@ class GetV1Account:
                                 instance_of(datetime),
                                 has_properties(
                                     {
-                                        "month": equal_to(datetime.now(timezone.utc).month),
+                                        "month": equal_to(
+                                            datetime.now(timezone.utc).month
+                                        ),
                                         "day": equal_to(datetime.now(timezone.utc).day),
-                                        "hour": equal_to(datetime.now(timezone.utc).hour),
+                                        "hour": equal_to(
+                                            datetime.now(timezone.utc).hour
+                                        ),
                                     }
                                 ),
                             ),
@@ -76,8 +80,12 @@ class GetV1Account:
                                 instance_of(datetime),
                                 has_properties(
                                     {
-                                        "year": equal_to(datetime.now(timezone.utc).year),
-                                        "month": equal_to(datetime.now(timezone.utc).month),
+                                        "year": equal_to(
+                                            datetime.now(timezone.utc).year
+                                        ),
+                                        "month": equal_to(
+                                            datetime.now(timezone.utc).month
+                                        ),
                                         "day": equal_to(datetime.now(timezone.utc).day),
                                     }
                                 ),

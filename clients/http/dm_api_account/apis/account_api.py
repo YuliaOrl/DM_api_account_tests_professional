@@ -55,7 +55,9 @@ class AccountApi(RestClient):
         return response
 
     @allure.step("Сброс пароля для зарегистрированного пользователя")
-    async def post_v1_account_password(self, reset_password: ResetPassword, validate_response=True):
+    async def post_v1_account_password(
+        self, reset_password: ResetPassword, validate_response=True
+    ):
         """
         Reset registered user password
         :param reset_password:
@@ -73,7 +75,9 @@ class AccountApi(RestClient):
         return response
 
     @allure.step("Изменение пароля зарегистрированного пользователя")
-    async def put_v1_account_password(self, change_password: ChangePassword, validate_response=True, **kwargs):
+    async def put_v1_account_password(
+        self, change_password: ChangePassword, validate_response=True, **kwargs
+    ):
         """
         Change registered user password
         :param change_password:
@@ -91,7 +95,9 @@ class AccountApi(RestClient):
         return response
 
     @allure.step("Изменение емейла")
-    async def put_v1_account_email(self, change_email: ChangeEmail, validate_response=True):
+    async def put_v1_account_email(
+        self, change_email: ChangeEmail, validate_response=True
+    ):
         """
         Change registered user email
         :param change_email:

@@ -39,7 +39,9 @@ class RestClient:
         log = self.log.bind(event_id=str(uuid.uuid4()))
         full_url = self.host + path
         if self.disable_log:
-            rest_response = await self.session.request(method=method, url=full_url, **kwargs)
+            rest_response = await self.session.request(
+                method=method, url=full_url, **kwargs
+            )
             rest_response.raise_for_status()
             return rest_response
 
@@ -53,7 +55,9 @@ class RestClient:
             data=kwargs.get("data"),
         )
 
-        rest_response = await self.session.request(method=method, url=full_url, **kwargs)
+        rest_response = await self.session.request(
+            method=method, url=full_url, **kwargs
+        )
         curl = curlify2.Curlify(rest_response.request).to_curl()
         print(curl)
 

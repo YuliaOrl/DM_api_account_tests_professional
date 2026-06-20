@@ -6,7 +6,9 @@ from packages.restclient.client import RestClient
 
 class LoginApi(RestClient):
     @allure.step("Авторизация пользователя")
-    async def post_v1_account_login(self, login_credentials: LoginCredentials, validate_response=True):
+    async def post_v1_account_login(
+        self, login_credentials: LoginCredentials, validate_response=True
+    ):
         """
         Authenticate via credentials
         :param login_credentials:

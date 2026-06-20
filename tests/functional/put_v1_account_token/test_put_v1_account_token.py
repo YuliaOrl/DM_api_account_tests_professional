@@ -18,5 +18,7 @@ class TestPutV1AccountToken:
             prepare_user.email,
         )
 
-        await account_helper.register_new_user(login=login, password=password, email=email)
+        await account_helper.register_new_user(
+            login=login, password=password, email=email
+        )
         await account_helper.user_login(login=login, password=password)
