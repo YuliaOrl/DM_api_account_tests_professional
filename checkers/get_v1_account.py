@@ -1,5 +1,8 @@
 import allure
+import httpx
 from datetime import datetime, timezone
+from clients.http.dm_api_account.models.user import User
+from clients.http.dm_api_account.models.user_details_envelope import UserDetailsEnvelope
 from hamcrest import (
     assert_that,
     has_property,
@@ -15,7 +18,7 @@ from hamcrest import (
 
 class GetV1Account:
     @classmethod
-    def check_response_values(cls, response, prepare_user):
+    def check_response_values(cls, response: UserDetailsEnvelope | httpx.Response, prepare_user: User) -> None:
         with allure.step("Проверка ответа"):
             assert_that(
                 response,
@@ -66,13 +69,9 @@ class GetV1Account:
                                 instance_of(datetime),
                                 has_properties(
                                     {
-                                        "month": equal_to(
-                                            datetime.now(timezone.utc).month
-                                        ),
+                                        "month": equal_to(datetime.now(timezone.utc).month),
                                         "day": equal_to(datetime.now(timezone.utc).day),
-                                        "hour": equal_to(
-                                            datetime.now(timezone.utc).hour
-                                        ),
+                                        "hour": equal_to(datetime.now(timezone.utc).hour),
                                     }
                                 ),
                             ),
@@ -80,12 +79,8 @@ class GetV1Account:
                                 instance_of(datetime),
                                 has_properties(
                                     {
-                                        "year": equal_to(
-                                            datetime.now(timezone.utc).year
-                                        ),
-                                        "month": equal_to(
-                                            datetime.now(timezone.utc).month
-                                        ),
+                                        "year": equal_to(datetime.now(timezone.utc).year),
+                                        "month": equal_to(datetime.now(timezone.utc).month),
                                         "day": equal_to(datetime.now(timezone.utc).day),
                                     }
                                 ),

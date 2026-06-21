@@ -1,10 +1,12 @@
 import json
 import allure
 import curlify2
+import httpx
+from typing import Callable, Any
 
 
-def allure_attach(fn):
-    async def wrapper(*args, **kwargs):
+def allure_attach(fn: Callable) -> Callable:
+    async def wrapper(*args: Any, **kwargs: Any) -> httpx.Response:
         body = kwargs.get("json")
         if body:
             allure.attach(

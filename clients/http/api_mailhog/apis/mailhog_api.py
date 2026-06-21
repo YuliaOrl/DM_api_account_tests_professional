@@ -1,10 +1,11 @@
 import allure
+import httpx
 from packages.restclient.client import RestClient
 
 
 class MailhogApi(RestClient):
     @allure.step("Получение писем из почтового сервера")
-    async def get_api_v2_messages(self, limit=50):
+    async def get_api_v2_messages(self, limit: int = 50) -> httpx.Response:
         """
         Get Users emails
         :return:

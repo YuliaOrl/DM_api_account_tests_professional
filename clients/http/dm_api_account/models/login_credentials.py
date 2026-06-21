@@ -5,6 +5,4 @@ class LoginCredentials(BaseModel):
     model_config = ConfigDict(extra="forbid")
     login: str = Field(..., description="Логин")
     password: str = Field(..., description="Пароль")
-    remember_me: bool = Field(
-        ..., description="Запомнить", serialization_alias="rememberMe"
-    )
+    remember_me: bool = Field(..., description="Запомнить", serialization_alias="rememberMe")

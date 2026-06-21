@@ -18,8 +18,8 @@ class BbParseMode(str, Enum):
 
 
 class InfoBbText(BaseModel):
-    value: str = Field(None)
-    parse_mod: BbParseMode = Field(None, alias="parseMode")
+    value: Optional[str] = Field(None)
+    parse_mod: BbParseMode = Field(alias="parseMode")
 
 
 class ColorSchema(str, Enum):
@@ -40,7 +40,7 @@ class PagingSettings(BaseModel):
 
 class UserSettings(BaseModel):
     color_schema: ColorSchema = Field(alias="colorSchema")
-    nanny_greetings_message: str = Field(None, alias="nannyGreetingsMessage")
+    nanny_greetings_message: Optional[str] = Field(None, alias="nannyGreetingsMessage")
     paging: PagingSettings
 
 
@@ -54,19 +54,19 @@ class UserRole(str, Enum):
 
 
 class UserDetails(BaseModel):
-    login: str = Field(None)
+    login: Optional[str] = Field(None)
     roles: List[UserRole]
-    medium_picture_url: str = Field(None, alias="mediumPictureUrl")
-    small_picture_url: str = Field(None, alias="smallPictureUrl")
-    status: str = Field(None)
+    medium_picture_url: Optional[str] = Field(None, alias="mediumPictureUrl")
+    small_picture_url: Optional[str] = Field(None, alias="smallPictureUrl")
+    status: Optional[str] = Field(None)
     rating: Rating
-    online: datetime = Field(None)
-    name: str = Field(None)
-    location: str = Field(None)
-    registration: datetime = Field(None)
-    icq: str = Field(None)
-    skype: str = Field(None)
-    original_picture_url: str = Field(None, alias="originalPictureUrl")
+    online: Optional[datetime] = Field(None)
+    name: Optional[str] = Field(None)
+    location: Optional[str] = Field(None)
+    registration: Optional[datetime] = Field(None)
+    icq: Optional[str] = Field(None)
+    skype: Optional[str] = Field(None)
+    original_picture_url: Optional[str] = Field(None, alias="originalPictureUrl")
     info: Optional[Union[InfoBbText, str]] = Field(None)
     settings: UserSettings
 

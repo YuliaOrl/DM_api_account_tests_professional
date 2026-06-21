@@ -1,4 +1,6 @@
 import allure
+import httpx
+from typing import Any
 from clients.http.dm_api_account.models.login_credentials import LoginCredentials
 from clients.http.dm_api_account.models.user_envelope import UserEnvelope
 from packages.restclient.client import RestClient
@@ -7,8 +9,8 @@ from packages.restclient.client import RestClient
 class LoginApi(RestClient):
     @allure.step("Авторизация пользователя")
     async def post_v1_account_login(
-        self, login_credentials: LoginCredentials, validate_response=True
-    ):
+        self, login_credentials: LoginCredentials, validate_response: bool = True
+    ) -> UserEnvelope | httpx.Response:
         """
         Authenticate via credentials
         :param login_credentials:
@@ -24,7 +26,7 @@ class LoginApi(RestClient):
         return response
 
     @allure.step("Выход авторизованного пользователя из аккаунта")
-    async def delete_v1_account_login(self, **kwargs):
+    async def delete_v1_account_login(self, **kwargs: Any) -> httpx.Response:
         """
         Logout as current user
         :param kwargs:
@@ -34,7 +36,7 @@ class LoginApi(RestClient):
         return response
 
     @allure.step("Выход авторизованного пользователя из аккаунта на всех устройствах")
-    async def delete_v1_account_login_all(self, **kwargs):
+    async def delete_v1_account_login_all(self, **kwargs: Any) -> httpx.Response:
         """
         Logout from every device
         :param kwargs:
