@@ -31,9 +31,10 @@ pytest-asyncio = "^1.4.0"
 
 [tool.poetry.group.lint.dependencies]
 ruff = "^0.15.18"
+mypy = "^2.1.0"
 
 [tool.ruff]
-line-lenght = 120
+line-length = 120
 
 extend-exclude = [
 #    "checkers"
