@@ -37,7 +37,7 @@ allure:
     rules:
         - when: always
 
-allure_reports:
+pages:
     stage: reports
     tags:
         - docker_new
