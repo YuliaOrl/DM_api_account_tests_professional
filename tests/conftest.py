@@ -53,7 +53,7 @@ def set_config(request):
     os.environ['TELEGRAM_BOT_CHAT_ID'] = v.get('telegram.chat_id')
     os.environ['TELEGRAM_BOT_ACCESS_TOKEN'] = v.get('telegram.token')
     request.config.stash['telegram-notifier-addfields']['enviroment'] = config_name
-    request.config.stash['telegram-notifier-addfields']['report'] = 'https://dm-api-account-tests-prof-397906.gitlab.io'
+    request.config.stash['telegram-notifier-addfields']['report'] = 'https://api-account-tests-professional-700056.gitlab.io'
 
 
 def pytest_addoption(parser):
