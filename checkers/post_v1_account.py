@@ -24,9 +24,7 @@ class PostV1Account:
                         "resource",
                         has_property("login", starts_with(login[: login.find("_")])),
                     ),
-                    has_property(
-                        "resource", has_property("registration", instance_of(datetime))
-                    ),
+                    has_property("resource", has_property("registration", instance_of(datetime))),
                     has_property(
                         "resource",
                         has_property(

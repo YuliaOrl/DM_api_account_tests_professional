@@ -8,9 +8,7 @@ from checkers.http_checkers import check_status_code_http
 @allure.suite("Тесты на проверку метода GET v1/account")
 @allure.sub_suite("Негативные тесты")
 class TestsNegativeGetV1Account:
-    @allure.title(
-        "Негативная проверка получения информации о неавторизованном пользователе"
-    )
+    @allure.title("Негативная проверка получения информации о неавторизованном пользователе")
     @allure.severity(allure.severity_level.NORMAL)
     @allure.description(
         "Тест проверяет получение ожидаемого статус кода 401 и сообщения об ошибке "
@@ -21,9 +19,7 @@ class TestsNegativeGetV1Account:
         with check_status_code_http(401, "User must be authenticated"):
             await account_helper.get_current_user()
 
-    @allure.title(
-        "Негативная проверка получения информации о неавторизованном пользователе при ddos-запросах"
-    )
+    @allure.title("Негативная проверка получения информации о неавторизованном пользователе при ddos-запросах")
     @allure.severity(allure.severity_level.NORMAL)
     @allure.description(
         "Тест проверяет получение ожидаемого статус кода 401 и сообщения об ошибке "

@@ -1,5 +1,4 @@
 import allure
-
 from checkers.post_v1_account import PostV1Account
 
 
@@ -20,10 +19,6 @@ class TestsPostV1Account:
             prepare_user.email,
         )
 
-        await account_helper.register_new_user(
-            login=login, password=password, email=email
-        )
-        response = await account_helper.user_login(
-            login=login, password=password, validate_response=True
-        )
+        await account_helper.register_new_user(login=login, password=password, email=email)
+        response = await account_helper.user_login(login=login, password=password, validate_response=True)
         PostV1Account.check_response_values(login, response)

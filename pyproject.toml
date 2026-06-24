@@ -33,7 +33,7 @@ pytest-asyncio = "^1.4.0"
 ruff = "^0.15.18"
 
 [tool.ruff]
-line-lenght = 120
+line-length = 120
 
 extend-exclude = [
 #    "checkers"

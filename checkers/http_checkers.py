@@ -14,9 +14,7 @@ def check_status_code_http(
         try:
             yield
             if expected_status_code != requests.codes.OK:
-                raise AssertionError(
-                    f"Ожидаемый статус код должен быть равен {expected_status_code}"
-                )
+                raise AssertionError(f"Ожидаемый статус код должен быть равен {expected_status_code}")
             if expected_title_message:
                 raise AssertionError(
                     f'Должно быть получено сообщение "{expected_title_message}", но запрос прошёл успешно'
