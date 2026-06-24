@@ -6,7 +6,6 @@ import curlify2
 from json import JSONDecodeError
 from swagger_coverage_py.request_schema_handler import RequestSchemaHandler
 from swagger_coverage_py.uri import URI
-
 from packages.restclient.configuration import Configuration
 from packages.restclient.utilities import allure_attach
 
