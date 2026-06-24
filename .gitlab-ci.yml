@@ -7,7 +7,7 @@ stages:
 lint:
     stage: lint
     tags:
-        - docker
+        - docker_new
     image: python:3.10-slim
     before_script:
         - pip install --upgrade pip
@@ -20,7 +20,7 @@ lint:
 ruff_lint:
     stage: lint
     tags:
-        - docker
+        - docker_new
     image: python:3.10-slim
     before_script:
         - pip install --upgrade pip
@@ -35,7 +35,7 @@ run_tests:
         - lint
     stage: testing
     tags:
-        - docker
+        - docker_new
     image: python:3.10-slim
     before_script:
         - apt-get update && apt-get install -y --no-install-recommends default-jre-headless
@@ -54,7 +54,7 @@ run_tests:
 allure:
     stage: reports
     tags:
-        - docker
+        - docker_new
     image: frankescobar/allure-docker-service
     script:
         - allure generate -c ./allure-results -o ./allure-report
@@ -69,7 +69,7 @@ allure:
 pages:
     stage: reports
     tags:
-        - docker
+        - docker_new
     needs:
         - job: allure
           artifacts: true
@@ -85,14 +85,14 @@ pages:
 coverage:
     stage: coverage
     tags:
-        - docker
+        - docker_new
     image: adoptopenjdk/openjdk11
     before_script:
         - apt-get update && apt-get install -y wget unzip
         - wget https://github.com/viclovsky/swagger-coverage/releases/download/1.5.0/swagger-coverage-1.5.0.zip
         - unzip swagger-coverage-1.5.0.zip
     script:
-        - ./swagger-coverage-commandline-1.5.0/bin/swagger-coverage-commandline -s http://185.185.143.231:5051/swagger/Account/swagger.json -i swagger-coverage-output
+        - ./swagger-coverage-commandline-1.5.0/bin/swagger-coverage-commandline -s ${SWAGGER_URL} -i swagger-coverage-output
     allow_failure: true
     artifacts:
         when: always
@@ -103,7 +103,7 @@ coverage:
 send coverage:
     stage: coverage
     tags:
-        - docker
+        - docker_new
     needs:
         - job: coverage
           artifacts: true
