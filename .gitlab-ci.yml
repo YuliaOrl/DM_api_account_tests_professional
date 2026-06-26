@@ -1,6 +1,6 @@
 include:
-  - project: 'YuliaOrlova/common-pipe'
-    file: '/qa/.common-qa-pipeline.yml'
+  - project: "ZolaPetrova/common-pipe"
+    file: "/qa/.common-qa-pipeline.yml"
 
 variables:
-  SWAGGER_URL: 'http://185.185.143.231:5051/swagger/Account/swagger.json'
+  SWAGGER_URL: ${SWAGGER_URL}
