@@ -55,7 +55,7 @@ def set_config(request: pytest.FixtureRequest) -> None:
     os.environ["TELEGRAM_BOT_ACCESS_TOKEN"] = v.get("telegram.token")
     request.config.stash["telegram-notifier-addfields"]["enviroment"] = config_name  # type: ignore[index]
     request.config.stash["telegram-notifier-addfields"]["report"] = (  # type: ignore[index]
-        "https://yuliaorl.github.io/DM_api_account_tests_professional/"
+        "https://yuliaorl.github.io/dm_api_account_tests_professional/"
     )
 
 
