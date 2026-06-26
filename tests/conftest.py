@@ -83,10 +83,10 @@ def account_helper(account_api, mailhog_api):
 
 
 @pytest.fixture()
-def auth_account_helper(account_api, mailhog_api, prepare_user):
+async def auth_account_helper(account_api, mailhog_api, prepare_user):
     auth_account_helper = AccountHelper(dm_account_api=account_api, mailhog=mailhog_api)
-    auth_account_helper.register_new_user(login=prepare_user.login, password=prepare_user.password, email=prepare_user.email)
-    auth_account_helper.auth_client(login=prepare_user.login, password=prepare_user.password)
+    await auth_account_helper.register_new_user(login=prepare_user.login, password=prepare_user.password, email=prepare_user.email)
+    await auth_account_helper.auth_client(login=prepare_user.login, password=prepare_user.password)
     return auth_account_helper
 
 

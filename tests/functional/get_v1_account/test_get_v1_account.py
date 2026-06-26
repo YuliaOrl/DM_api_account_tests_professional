@@ -12,7 +12,7 @@ class TestsGetV1Account:
     @allure.title('Проверка получения информации о пользователе')
     @allure.severity(allure.severity_level.CRITICAL)
     @allure.description('Тест выполняет успешное получение информации об авторизованном пользователе с проверкой содержания ответа.')
-    def test_get_v1_account_auth(self, auth_account_helper, prepare_user):
+    async def test_get_v1_account_auth(self, auth_account_helper, prepare_user):
         with check_status_code_http():
-            response = auth_account_helper.get_current_user()
+            response = await auth_account_helper.get_current_user()
             GetV1Account.check_response_values(response, prepare_user)

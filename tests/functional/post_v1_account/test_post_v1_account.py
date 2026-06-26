@@ -13,9 +13,9 @@ class TestsPostV1Account:
     @allure.severity(allure.severity_level.CRITICAL)
     @allure.description('Тест проверяет успешную регистрацию нового пользователя с его последующей авторизацией и '
                         'проверкой содержания ответа.')
-    def test_post_v1_account(self, account_helper, prepare_user):
+    async def test_post_v1_account(self, account_helper, prepare_user):
         login, password, email = prepare_user.login, prepare_user.password, prepare_user.email
 
-        account_helper.register_new_user(login=login, password=password, email=email)
-        response = account_helper.user_login(login=login, password=password, validate_response=True)
+        await account_helper.register_new_user(login=login, password=password, email=email)
+        response = await account_helper.user_login(login=login, password=password, validate_response=True)
         PostV1Account.check_response_values(login, response)

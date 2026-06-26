@@ -1,10 +1,11 @@
-from requests import session, JSONDecodeError
+import asyncio
+import httpx
 import structlog
 import uuid
-import curlify
+import curlify2
+from json import JSONDecodeError
 from swagger_coverage_py.request_schema_handler import RequestSchemaHandler
 from swagger_coverage_py.uri import URI
-
 from packages.restclient.configuration import Configuration
 from packages.restclient.utilities import allure_attach
 
@@ -14,31 +15,31 @@ class RestClient:
         self.host = configuration.host
         self.set_headers(configuration.headers)
         self.disable_log = configuration.disable_log
-        self.session = session()
+        self.session = httpx.AsyncClient(verify=False)
         self.log = structlog.get_logger(__name__).bind(service='api')
 
     def set_headers(self, headers):
         if headers:
             self.session.headers.update(headers)
 
-    def post(self, path, **kwargs):
-        return self._send_request(method='POST', path=path, **kwargs)
+    async def post(self, path, **kwargs):
+        return await self._send_request(method='POST', path=path, **kwargs)
 
-    def get(self, path, **kwargs):
-        return self._send_request(method='GET', path=path, **kwargs)
+    async def get(self, path, **kwargs):
+        return await self._send_request(method='GET', path=path, **kwargs)
 
-    def put(self, path, **kwargs):
-        return self._send_request(method='PUT', path=path, **kwargs)
+    async def put(self, path, **kwargs):
+        return await self._send_request(method='PUT', path=path, **kwargs)
 
-    def delete(self, path, **kwargs):
-        return self._send_request(method='DELETE', path=path, **kwargs)
+    async def delete(self, path, **kwargs):
+        return await self._send_request(method='DELETE', path=path, **kwargs)
 
     @allure_attach
-    def _send_request(self, method, path, **kwargs):
+    async def _send_request(self, method, path, **kwargs):
         log = self.log.bind(event_id=str(uuid.uuid4()))
         full_url = self.host + path
         if self.disable_log:
-            rest_response = self.session.request(method=method, url=full_url, **kwargs)
+            rest_response = await self.session.request(method=method, url=full_url, **kwargs)
             rest_response.raise_for_status()
             return rest_response
 
@@ -52,14 +53,15 @@ class RestClient:
             data=kwargs.get('data'),
         )
 
-        rest_response = self.session.request(method=method, url=full_url, **kwargs)
-        curl = curlify.to_curl(rest_response.request)
+        rest_response = await self.session.request(method=method, url=full_url, **kwargs)
+        curl = curlify2.Curlify(rest_response.request).to_curl()
         print(curl)
 
         uri = URI(host=self.host, base_path="", unformatted_path=path, uri_params=kwargs.get('params'))
-        RequestSchemaHandler(
+        handler = RequestSchemaHandler(
             uri, method.lower(), rest_response, kwargs
-        ).write_schema()
+        )
+        await asyncio.to_thread(handler.write_schema)
 
         log.msg(
             event='Response',
