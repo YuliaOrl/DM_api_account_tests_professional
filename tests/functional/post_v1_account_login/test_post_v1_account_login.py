@@ -1,4 +1,6 @@
 import allure
+from clients.http.dm_api_account.models.user import User
+from helpers.account_helper import AccountHelper
 
 
 @allure.epic("DM.API Account")
@@ -9,7 +11,7 @@ class TestPostV1AccountLogin:
     @allure.title("Проверка авторизации пользователя")
     @allure.severity(allure.severity_level.BLOCKER)
     @allure.description("Тест проверяет успешную регистрацию нового пользователя и его последующую авторизацию.")
-    async def test_post_v1_account_login(self, account_helper, prepare_user):
+    async def test_post_v1_account_login(self, account_helper: AccountHelper, prepare_user: User) -> None:
         login, password, email = (
             prepare_user.login,
             prepare_user.password,
