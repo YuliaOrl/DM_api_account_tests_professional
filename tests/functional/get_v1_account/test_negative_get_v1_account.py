@@ -1,6 +1,7 @@
 import asyncio
 import allure
 from checkers.http_checkers import check_status_code_http
+from helpers.account_helper import AccountHelper
 
 
 @allure.epic("DM.API Account")
@@ -15,7 +16,7 @@ class TestsNegativeGetV1Account:
         '"User must be authenticated" от сервера при попытке запроса информации о пользователе, '
         "если пользователь не авторизован."
     )
-    async def test_get_v1_account_no_auth(self, account_helper):
+    async def test_get_v1_account_no_auth(self, account_helper: AccountHelper) -> None:
         with check_status_code_http(401, "User must be authenticated"):
             await account_helper.get_current_user()
 
@@ -26,7 +27,7 @@ class TestsNegativeGetV1Account:
         '"User must be authenticated" от сервера при попытке запроса информации о пользователе, '
         "если пользователь не авторизован."
     )
-    async def test_get_v1_account_no_auth_ddos(self, account_helper):
+    async def test_get_v1_account_no_auth_ddos(self, account_helper: AccountHelper) -> None:
         with check_status_code_http(401, "User must be authenticated"):
             ddos_tasks = []
             for _ in range(50):

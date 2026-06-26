@@ -1,4 +1,6 @@
 import allure
+from clients.http.dm_api_account.models.user import User
+from helpers.account_helper import AccountHelper
 
 
 @allure.epic("DM.API Account")
@@ -9,7 +11,7 @@ class TestPutV1AccountPassword:
     @allure.title("Проверка изменения пароля пользователя")
     @allure.severity(allure.severity_level.CRITICAL)
     @allure.description("Тест проверяет успешную смену пароля пользователя с последующей авторизацией с новым паролем.")
-    async def test_put_v1_account_password(self, account_helper, prepare_user):
+    async def test_put_v1_account_password(self, account_helper: AccountHelper, prepare_user: User) -> None:
         login, password, email = (
             prepare_user.login,
             prepare_user.password,

@@ -1,4 +1,6 @@
 import allure
+import httpx
+from typing import Any
 from clients.http.dm_api_account.models.change_email import ChangeEmail
 from clients.http.dm_api_account.models.change_password import ChangePassword
 from clients.http.dm_api_account.models.registration import Registration
@@ -10,7 +12,7 @@ from packages.restclient.client import RestClient
 
 class AccountApi(RestClient):
     @allure.step("Регистрация нового пользователя")
-    async def post_v1_account(self, registration: Registration):
+    async def post_v1_account(self, registration: Registration) -> httpx.Response:
         """
         Register new user
         :param registration:
@@ -23,7 +25,9 @@ class AccountApi(RestClient):
         return response
 
     @allure.step("Получение информации о пользователе")
-    async def get_v1_account(self, validate_response=True, **kwargs):
+    async def get_v1_account(
+        self, validate_response: bool = True, **kwargs: Any
+    ) -> UserDetailsEnvelope | httpx.Response:
         """
         Get current user
         :param validate_response:
@@ -36,7 +40,7 @@ class AccountApi(RestClient):
         return response
 
     @allure.step("Активация пользователя")
-    async def put_v1_account_token(self, token, validate_response=True):
+    async def put_v1_account_token(self, token: str, validate_response: bool = True) -> UserEnvelope | httpx.Response:
         """
         Activate registered user
         :param token:
@@ -55,7 +59,9 @@ class AccountApi(RestClient):
         return response
 
     @allure.step("Сброс пароля для зарегистрированного пользователя")
-    async def post_v1_account_password(self, reset_password: ResetPassword, validate_response=True):
+    async def post_v1_account_password(
+        self, reset_password: ResetPassword, validate_response: bool = True
+    ) -> UserEnvelope | httpx.Response:
         """
         Reset registered user password
         :param reset_password:
@@ -73,7 +79,9 @@ class AccountApi(RestClient):
         return response
 
     @allure.step("Изменение пароля зарегистрированного пользователя")
-    async def put_v1_account_password(self, change_password: ChangePassword, validate_response=True, **kwargs):
+    async def put_v1_account_password(
+        self, change_password: ChangePassword, validate_response: bool = True, **kwargs: Any
+    ) -> UserEnvelope | httpx.Response:
         """
         Change registered user password
         :param change_password:
@@ -91,7 +99,9 @@ class AccountApi(RestClient):
         return response
 
     @allure.step("Изменение емейла")
-    async def put_v1_account_email(self, change_email: ChangeEmail, validate_response=True):
+    async def put_v1_account_email(
+        self, change_email: ChangeEmail, validate_response: bool = True
+    ) -> UserEnvelope | httpx.Response:
         """
         Change registered user email
         :param change_email:

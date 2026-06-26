@@ -1,5 +1,7 @@
 import allure
 from checkers.http_checkers import check_status_code_http
+from clients.http.dm_api_account.models.user import User
+from helpers.account_helper import AccountHelper
 
 
 @allure.epic("DM.API Account")
@@ -13,7 +15,7 @@ class TestPutV1AccountEmail:
         "Тест проверяет создание пользователя, изменение его емейла, авторизацию без активации смены "
         "пароля и получение ошибки 403, последующую активацию пользователя и его успешную авторизацию."
     )
-    async def test_put_v1_account_email(self, account_helper, prepare_user):
+    async def test_put_v1_account_email(self, account_helper: AccountHelper, prepare_user: User) -> None:
         login, password, email = (
             prepare_user.login,
             prepare_user.password,

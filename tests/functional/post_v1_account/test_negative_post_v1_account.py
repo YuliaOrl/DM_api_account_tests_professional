@@ -1,18 +1,18 @@
 import pytest
 import allure
-from collections import namedtuple
 from datetime import datetime
 from checkers.http_checkers import check_status_code_http
 from clients.http.dm_api_account.models.registration import Registration
+from clients.http.dm_api_account.models.user import User
+from helpers.account_helper import AccountHelper
 
 
-def new_user():
+def new_user() -> User:
     now = datetime.now()
     time = now.strftime("%H_%M_%S_%f")
     login = f"Testov_{time}"
     password = "123456789"
     email = f"{login}@yandex.ru"
-    User = namedtuple("User", ["login", "password", "email"])
     user = User(login=login, password=password, email=email)
     return user
 
@@ -47,7 +47,9 @@ class TestsNegativePostV1Account:
             ],
         ],
     )
-    async def test_negative_post_v1_account(self, account_helper, error_message, registration):
+    async def test_negative_post_v1_account(
+        self, account_helper: AccountHelper, error_message: dict[str, list[str]], registration: Registration
+    ) -> None:
         allure.dynamic.description(
             f"Тест проверяет ожидаемый статус код 400 и сообщение об ошибке {error_message} "
             f"от сервера при регистрации нового пользователя, если использовать "

@@ -3,6 +3,7 @@ import httpx
 import structlog
 import uuid
 import curlify2
+from typing import Any
 from json import JSONDecodeError
 from swagger_coverage_py.request_schema_handler import RequestSchemaHandler
 from swagger_coverage_py.uri import URI
@@ -18,24 +19,24 @@ class RestClient:
         self.session = httpx.AsyncClient(verify=False)
         self.log = structlog.get_logger(__name__).bind(service="api")
 
-    def set_headers(self, headers):
+    def set_headers(self, headers: dict[str, str] | None) -> None:
         if headers:
             self.session.headers.update(headers)
 
-    async def post(self, path, **kwargs):
+    async def post(self, path: str, **kwargs: Any) -> httpx.Response:
         return await self._send_request(method="POST", path=path, **kwargs)
 
-    async def get(self, path, **kwargs):
+    async def get(self, path: str, **kwargs: Any) -> httpx.Response:
         return await self._send_request(method="GET", path=path, **kwargs)
 
-    async def put(self, path, **kwargs):
+    async def put(self, path: str, **kwargs: Any) -> httpx.Response:
         return await self._send_request(method="PUT", path=path, **kwargs)
 
-    async def delete(self, path, **kwargs):
+    async def delete(self, path: str, **kwargs: Any) -> httpx.Response:
         return await self._send_request(method="DELETE", path=path, **kwargs)
 
     @allure_attach
-    async def _send_request(self, method, path, **kwargs):
+    async def _send_request(self, method: str, path: str, **kwargs: Any) -> httpx.Response:
         log = self.log.bind(event_id=str(uuid.uuid4()))
         full_url = self.host + path
         if self.disable_log:
@@ -76,7 +77,7 @@ class RestClient:
         return rest_response
 
     @staticmethod
-    def _get_json(rest_response):
+    def _get_json(rest_response: httpx.Response) -> dict[str, Any]:
         try:
             return rest_response.json()
         except JSONDecodeError:

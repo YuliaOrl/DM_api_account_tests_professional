@@ -1,5 +1,8 @@
 import allure
+import httpx
 from datetime import datetime, timezone
+from clients.http.dm_api_account.models.user import User
+from clients.http.dm_api_account.models.user_details_envelope import UserDetailsEnvelope
 from hamcrest import (
     assert_that,
     has_property,
@@ -15,7 +18,7 @@ from hamcrest import (
 
 class GetV1Account:
     @classmethod
-    def check_response_values(cls, response, prepare_user):
+    def check_response_values(cls, response: UserDetailsEnvelope | httpx.Response, prepare_user: User) -> None:
         with allure.step("Проверка ответа"):
             assert_that(
                 response,
