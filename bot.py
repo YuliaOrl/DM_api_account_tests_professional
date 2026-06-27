@@ -3,7 +3,7 @@ from telebot import TeleBot
 from vyper import v
 
 
-config = Path(__file__).parent.joinpath("../../").joinpath("config")
+config = Path(__file__).parent.joinpath("config")
 v.set_config_name("stg")
 v.add_config_path(config)
 v.read_in_config()
