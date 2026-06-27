@@ -7,8 +7,8 @@ from pathlib import Path
 from typing import Iterator
 from clients.http.dm_api_account.models.user import User
 from helpers.account_helper import AccountHelper
-from packages.restclient.configuration import Configuration as MailhogConfiguration
-from packages.restclient.configuration import Configuration as DMApiConfiguration
+from restclient.configuration import Configuration as MailhogConfiguration
+from restclient.configuration import Configuration as DMApiConfiguration
 from services.dm_api_account import DMApiAccount
 from services.api_mailhog import MailHogApi
 import structlog
