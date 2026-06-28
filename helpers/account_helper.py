@@ -3,14 +3,16 @@ import allure
 import httpx
 from typing import Any, Callable
 from json import loads
-from clients.http.dm_api_account.models.change_email import ChangeEmail
-from clients.http.dm_api_account.models.change_password import ChangePassword
-from clients.http.dm_api_account.models.login_credentials import LoginCredentials
-from clients.http.dm_api_account.models.registration import Registration
-from clients.http.dm_api_account.models.reset_password import ResetPassword
+from clients.http.dm_api_account.models.api_models import (
+    ChangeEmail,
+    ChangePassword,
+    LoginCredentials,
+    Registration,
+    ResetPassword,
+    UserDetailsEnvelope,
+    UserEnvelope,
+)
 from clients.http.dm_api_account.models.user import User
-from clients.http.dm_api_account.models.user_details_envelope import UserDetailsEnvelope
-from clients.http.dm_api_account.models.user_envelope import UserEnvelope
 from services.dm_api_account import DMApiAccount
 from services.api_mailhog import MailHogApi
 
@@ -36,17 +38,18 @@ class AccountHelper:
     def __init__(self, dm_account_api: DMApiAccount, mailhog: MailHogApi):
         self.dm_account_api = dm_account_api
         self.mailhog = mailhog
+        self.token: str = ""
 
     @allure.step("Авторизация нового пользователя")
-    async def auth_client(self, login: str, password: str, validate_response: bool = False) -> None:
-        login_credentials = LoginCredentials(login=login, password=password, remember_me=True)
-        response = await self.dm_account_api.login_api.post_v1_account_login(
-            login_credentials=login_credentials, validate_response=validate_response
+    async def auth_client(self, login: str, password: str) -> None:
+        login_credentials = LoginCredentials(login=login, password=password, rememberMe=True)
+        response = await self.dm_account_api.login_api.post_v1_account_login_with_http_info(
+            login_credentials=login_credentials
         )
-        if isinstance(response, httpx.Response):
-            token = {"x-dm-auth-token": response.headers["x-dm-auth-token"]}
-            self.dm_account_api.account_api.set_headers(token)
-            self.dm_account_api.login_api.set_headers(token)
+        token = response.headers.get("x-dm-auth-token")
+        if token and isinstance(response, httpx.Response):
+            self.token = token
+            self.dm_account_api.api_client.headers.update({"x-dm-auth-token": token})
 
     @allure.step("Регистрация нового пользователя")
     async def register_new_user(self, login: str, password: str, email: str) -> User:
@@ -66,17 +69,25 @@ class AccountHelper:
         validate_response: bool = True,
         validate_headers: bool = False,
     ) -> UserEnvelope | httpx.Response:
-        login_credentials = LoginCredentials(login=login, password=password, remember_me=remember_me)
-        response = await self.dm_account_api.login_api.post_v1_account_login(
-            login_credentials=login_credentials, validate_response=validate_response
+        login_credentials = LoginCredentials(login=login, password=password, rememberMe=remember_me)
+        if validate_response:
+            return await self.dm_account_api.login_api.post_v1_account_login(login_credentials=login_credentials)
+
+        response = await self.dm_account_api.login_api.post_v1_account_login_with_http_info(
+            login_credentials=login_credentials
         )
-        if validate_headers and not validate_response and isinstance(response, httpx.Response):
-            assert response.headers["x-dm-auth-token"], f"Токен для пользователя {login} не был получен"
+        response.raise_for_status()
+        if validate_headers:
+            assert response.headers.get("x-dm-auth-token"), f"Токен для пользователя {login} не был получен"
         return response
 
     @allure.step("Получение информации о текущем пользователе")
-    async def get_current_user(self) -> UserDetailsEnvelope | httpx.Response:
-        response = await self.dm_account_api.account_api.get_v1_account()
+    async def get_current_user(self, validate_response: bool = True) -> UserDetailsEnvelope | httpx.Response:
+        if validate_response:
+            return await self.dm_account_api.account_api.get_v1_account(x_dm_auth_token=self.token)
+
+        response = await self.dm_account_api.account_api.get_v1_account_with_http_info(x_dm_auth_token=self.token)
+        response.raise_for_status()
         return response
 
     @allure.step("Изменение емейла")
@@ -93,7 +104,7 @@ class AccountHelper:
         await self.dm_account_api.account_api.post_v1_account_password(reset_password=reset_password)
         token = await self.get_activation_token_by_login(login, confirm="password")
         assert token is not None, f"Токен для пользователя {login} не был получен"
-        change_password = ChangePassword(login=login, token=token, old_password=password, new_password=new_password)
+        change_password = ChangePassword(login=login, token=token, oldPassword=password, newPassword=new_password)
         response = await self.dm_account_api.account_api.put_v1_account_password(change_password=change_password)
         return response
 
@@ -106,13 +117,13 @@ class AccountHelper:
 
     @allure.step("Выход пользователя из аккаунта")
     async def user_logout(self) -> httpx.Response:
-        response = await self.dm_account_api.login_api.delete_v1_account_login()
+        response = await self.dm_account_api.login_api.delete_v1_account_login(x_dm_auth_token=self.token)
         assert response.status_code == 204, "Выход из аккаунта не был выполнен"
         return response
 
     @allure.step("Выход пользователя из аккаунта на всех устройствах")
     async def user_logout_all(self) -> httpx.Response:
-        response = await self.dm_account_api.login_api.delete_v1_account_login_all()
+        response = await self.dm_account_api.login_api.delete_v1_account_login_all(x_dm_auth_token=self.token)
         assert response.status_code == 204, "Выход из аккаунта на всех устройствах не был выполнен"
         return response
 

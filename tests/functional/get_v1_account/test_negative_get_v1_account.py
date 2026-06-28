@@ -18,7 +18,7 @@ class TestsNegativeGetV1Account:
     )
     async def test_get_v1_account_no_auth(self, account_helper: AccountHelper) -> None:
         with check_status_code_http(401, "User must be authenticated"):
-            await account_helper.get_current_user()
+            await account_helper.get_current_user(validate_response=False)
 
     @allure.title("Негативная проверка получения информации о неавторизованном пользователе при ddos-запросах")
     @allure.severity(allure.severity_level.NORMAL)
@@ -31,5 +31,5 @@ class TestsNegativeGetV1Account:
         with check_status_code_http(401, "User must be authenticated"):
             ddos_tasks = []
             for _ in range(5):
-                ddos_tasks.append(account_helper.get_current_user())
+                ddos_tasks.append(account_helper.get_current_user(validate_response=False))
             await asyncio.gather(*ddos_tasks)
