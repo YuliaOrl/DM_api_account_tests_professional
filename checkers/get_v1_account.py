@@ -2,7 +2,7 @@ import allure
 import httpx
 from datetime import datetime, timezone
 from clients.http.dm_api_account.models.user import User
-from clients.http.dm_api_account.models.user_details_envelope import UserDetailsEnvelope
+from clients.http.dm_api_account.models.api_models import UserDetailsEnvelope, ColorSchema, UserRole
 from hamcrest import (
     assert_that,
     has_property,
@@ -31,11 +31,11 @@ class GetV1Account:
                                 {
                                     "color_schema": is_in(
                                         [
-                                            "Modern",
-                                            "Pale",
-                                            "Classic",
-                                            "ClassicPale",
-                                            "Night",
+                                            ColorSchema.MODERN,
+                                            ColorSchema.PALE,
+                                            ColorSchema.CLASSIC,
+                                            ColorSchema.CLASSIC_PALE,
+                                            ColorSchema.NIGHT,
                                         ]
                                     ),
                                     "paging": has_properties(
@@ -51,12 +51,12 @@ class GetV1Account:
                             ),
                             "login": equal_to(prepare_user.login),
                             "roles": only_contains(
-                                "Guest",
-                                "Player",
-                                "Administrator",
-                                "NannyModerator",
-                                "RegularModerator",
-                                "SeniorModerator",
+                                UserRole.GUEST,
+                                UserRole.PLAYER,
+                                UserRole.ADMINISTRATOR,
+                                UserRole.NANNY_MODERATOR,
+                                UserRole.REGULAR_MODERATOR,
+                                UserRole.SENIOR_MODERATOR,
                             ),
                             "rating": has_properties(
                                 {

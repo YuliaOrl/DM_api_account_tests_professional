@@ -1,7 +1,7 @@
 import allure
 from checkers.post_v1_account import PostV1Account
 from clients.http.dm_api_account.models.user import User
-from clients.http.dm_api_account.models.user_envelope import UserEnvelope
+from clients.http.dm_api_account.models.api_models import UserEnvelope
 from helpers.account_helper import AccountHelper
 
 

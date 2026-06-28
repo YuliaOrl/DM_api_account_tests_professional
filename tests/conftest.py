@@ -7,8 +7,6 @@ from pathlib import Path
 from typing import Iterator
 from clients.http.dm_api_account.models.user import User
 from helpers.account_helper import AccountHelper
-from restclient.configuration import Configuration as MailhogConfiguration
-from restclient.configuration import Configuration as DMApiConfiguration
 from services.dm_api_account import DMApiAccount
 from services.api_mailhog import MailHogApi
 import structlog
@@ -33,7 +31,7 @@ options = (
 )
 
 
-@pytest.fixture(scope="session", autouse=True)
+# @pytest.fixture(scope="session", autouse=True)
 def setup_swagger_coverage() -> Iterator[None]:
     reporter = CoverageReporter(api_name="dm-api-account", host="http://185.185.143.231:5051")
     reporter.cleanup_input_files()
@@ -67,15 +65,13 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 
 @pytest.fixture()
 def account_api() -> DMApiAccount:
-    dm_api_configuration = DMApiConfiguration(host=v.get("service.dm_api_account"), disable_log=False)
-    account = DMApiAccount(configuration=dm_api_configuration)
+    account = DMApiAccount(host=v.get("service.dm_api_account"), disable_log=False)
     return account
 
 
 @pytest.fixture()
 def mailhog_api() -> MailHogApi:
-    mailhog_configuration = MailhogConfiguration(host=v.get("service.mailhog"), disable_log=True)
-    mailhog_client = MailHogApi(configuration=mailhog_configuration)
+    mailhog_client = MailHogApi(host=v.get("service.mailhog"), disable_log=True)
     return mailhog_client
 
 
