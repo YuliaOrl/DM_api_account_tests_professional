@@ -83,10 +83,10 @@ jobs:
           pytest ./tests --alluredir=allure-results --disable-warnings -s
         continue-on-error: true
 
-      - name: Run Coverage
-        if: ${{ always() }}
-        run: |
-          python -m bot
+#      - name: Run Coverage
+#        if: ${{ always() }}
+#        run: |
+#          python -m bot
 
       - name: Archive allure results
         uses: actions/upload-artifact@v4
