@@ -3,7 +3,7 @@ from telebot import TeleBot
 from vyper import v
 
 
-config = Path(__file__).parent.joinpath("../../").joinpath("config")
+config = Path(__file__).parent.joinpath("config")
 v.set_config_name("stg")
 v.add_config_path(config)
 v.read_in_config()
@@ -11,7 +11,7 @@ v.read_in_config()
 
 def send_file() -> None:
     telegram_bot = TeleBot(v.get("telegram.token"))
-    file_path = Path(__file__).parent.joinpath("../../").joinpath("swagger-coverage-report-dm-api-account.html")
+    file_path = Path(__file__).parent.joinpath("swagger-coverage-report-dm-api-account.html")
     with open(file_path, "rb") as document:
         telegram_bot.send_document(
             v.get("telegram.chat_id"),

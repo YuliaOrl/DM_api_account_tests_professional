@@ -8,9 +8,52 @@ permissions:
   id-token: write
 
 jobs:
+  mypy_lint:
+    name: Mypy lint
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip poetry
+          poetry config virtualenvs.create false
+          poetry install --with lint
+
+      - name: Run mypy
+        run: mypy .
+
+  ruff_lint:
+    name: Ruff Lint
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip poetry
+          poetry config virtualenvs.create false
+          poetry install --with lint
+
+      - name: Run ruff
+        run: ruff check .
+
   test:
     name: Python tests
     runs-on: ubuntu-latest
+    needs: [mypy_lint, ruff_lint]
     steps:
       - uses: actions/checkout@v5
 
@@ -30,8 +73,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install --upgrade pip poetry
+          poetry config virtualenvs.create false
+          poetry install
 
       - name: Run tests
         run: |
@@ -42,7 +86,7 @@ jobs:
       - name: Run Coverage
         if: ${{ always() }}
         run: |
-          python -m packages.notifier.bot
+          python -m bot
 
       - name: Archive allure results
         uses: actions/upload-artifact@v4
@@ -52,18 +96,20 @@ jobs:
           retention-days: 3
 
   generate-report:
+    name: Generate report
     runs-on: ubuntu-latest
     needs: test
-    name: Generate report
     steps:
       - uses: actions/setup-java@v5
         with:
           distribution: 'microsoft'
           java-version: '17'
       - run: sudo wget https://github.com/allure-framework/allure2/releases/download/2.42.0/allure-2.42.0.tgz && sudo tar -xvzf allure-2.42.0.tgz -C /opt/ && sudo ln -s /opt/allure-2.42.0/bin/allure /usr/bin/allure
+
       - name: Download allure results
         uses: actions/download-artifact@v4
       - run: allure generate -c allure-results -o _site
+
       - name: Store report
         uses: actions/upload-artifact@v4
         with:
@@ -72,15 +118,18 @@ jobs:
           retention-days: 1
 
   publish-report:
+    name: Publish report
     runs-on: ubuntu-latest
     needs: generate-report
-    name: Publish report
     steps:
       - uses: actions/checkout@v5
+
       - name: Download site report
         uses: actions/download-artifact@v4
+
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

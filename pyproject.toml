@@ -27,6 +27,7 @@ six = "^1.17.0"
 httpx = "^0.28.1"
 curlify2 = "^2.0.0"
 pytest-asyncio = "^1.4.0"
+restclient = {git = "https://github.com/YuliaOrl/rest_client.git", rev = "main"}
 
 
 [tool.poetry.group.lint.dependencies]
