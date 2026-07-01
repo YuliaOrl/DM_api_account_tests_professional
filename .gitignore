@@ -218,3 +218,11 @@ swagger-coverage-report.html
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# OpenApi generator
+clients/http/schemas/
+openapi-generator-cli-7.23.0.jar
+
+# code generator
+model.py

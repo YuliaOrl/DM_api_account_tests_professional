@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import Iterator
 from clients.http.dm_api_account.models.user import User
 from helpers.account_helper import AccountHelper
+from dm_api_account.configuration import Configuration as MailhogConfiguration
+from dm_api_account.configuration import Configuration as DmApiConfiguration
 from services.dm_api_account import DMApiAccount
 from services.api_mailhog import MailHogApi
 import structlog
@@ -65,13 +67,15 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 
 @pytest.fixture()
 def account_api() -> DMApiAccount:
-    account = DMApiAccount(host=v.get("service.dm_api_account"), disable_log=False)
+    dm_api_configuration = DmApiConfiguration(host=v.get("service.dm_api_account"))
+    account = DMApiAccount(configuration=dm_api_configuration)
     return account
 
 
 @pytest.fixture()
 def mailhog_api() -> MailHogApi:
-    mailhog_client = MailHogApi(host=v.get("service.mailhog"), disable_log=True)
+    mailhog_configuration = MailhogConfiguration(host=v.get("service.mailhog"))
+    mailhog_client = MailHogApi(configuration=mailhog_configuration)
     return mailhog_client
 
 

@@ -2,7 +2,7 @@ import pytest
 import allure
 from datetime import datetime
 from checkers.http_checkers import check_status_code_http
-from clients.http.dm_api_account.models.api_models import Registration
+from dm_api_account.models import Registration
 from clients.http.dm_api_account.models.user import User
 from helpers.account_helper import AccountHelper
 
@@ -60,5 +60,5 @@ class TestsNegativePostV1Account:
             expected_title_message="Validation failed",
             expected_error_message=error_message,
         ):
-            response = await account_helper.dm_account_api.account_api.post_v1_account(registration=registration)
+            response = await account_helper.dm_account_api.account_api.register(registration=registration)
             response.raise_for_status()

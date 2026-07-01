@@ -1,7 +1,9 @@
 import allure
 import httpx
+from json import loads
 from typing import Iterator
 from contextlib import contextmanager
+from dm_api_account.exceptions import ApiException
 
 
 @contextmanager
@@ -23,3 +25,15 @@ def check_status_code_http(
             assert e.response.status_code == expected_status_code
             assert e.response.json().get("title") == expected_title_message
             assert e.response.json().get("errors") == expected_error_message
+        except ApiException as e:  # Обработка исключений OpenAPI-клиента, которые наследуются от ApiException
+            assert e.status == expected_status_code, f"Ожидался статус код {expected_status_code}, получен {e.status}"
+            if e.body:
+                response_json = loads(e.body)
+                if expected_title_message:
+                    assert response_json.get("title") == expected_title_message, (
+                        f"Ожидалось сообщение '{expected_title_message}', получено '{response_json.get('title')}'"
+                    )
+                if expected_error_message:
+                    assert response_json.get("errors") == expected_error_message, (
+                        f"Ожидались ошибки {expected_error_message}, получены {response_json.get('errors')}"
+                    )

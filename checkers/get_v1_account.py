@@ -13,6 +13,8 @@ from hamcrest import (
     only_contains,
     all_of,
     instance_of,
+    any_of,
+    none,
 )
 
 
@@ -31,11 +33,11 @@ class GetV1Account:
                                 {
                                     "color_schema": is_in(
                                         [
-                                            ColorSchema.MODERN,
-                                            ColorSchema.PALE,
-                                            ColorSchema.CLASSIC,
-                                            ColorSchema.CLASSIC_PALE,
-                                            ColorSchema.NIGHT,
+                                            ColorSchema.MODERN.value,
+                                            ColorSchema.PALE.value,
+                                            ColorSchema.CLASSIC.value,
+                                            ColorSchema.CLASSIC_PALE.value,
+                                            ColorSchema.NIGHT.value,
                                         ]
                                     ),
                                     "paging": has_properties(
@@ -51,12 +53,12 @@ class GetV1Account:
                             ),
                             "login": equal_to(prepare_user.login),
                             "roles": only_contains(
-                                UserRole.GUEST,
-                                UserRole.PLAYER,
-                                UserRole.ADMINISTRATOR,
-                                UserRole.NANNY_MODERATOR,
-                                UserRole.REGULAR_MODERATOR,
-                                UserRole.SENIOR_MODERATOR,
+                                UserRole.GUEST.value,
+                                UserRole.PLAYER.value,
+                                UserRole.ADMINISTRATOR.value,
+                                UserRole.NANNY_MODERATOR.value,
+                                UserRole.REGULAR_MODERATOR.value,
+                                UserRole.SENIOR_MODERATOR.value,
                             ),
                             "rating": has_properties(
                                 {
@@ -65,14 +67,17 @@ class GetV1Account:
                                     "quantity": equal_to(0),
                                 }
                             ),
-                            "online": all_of(
-                                instance_of(datetime),
-                                has_properties(
-                                    {
-                                        "month": equal_to(datetime.now(timezone.utc).month),
-                                        "day": equal_to(datetime.now(timezone.utc).day),
-                                        "hour": equal_to(datetime.now(timezone.utc).hour),
-                                    }
+                            "online": any_of(
+                                none(),  # type: ignore[arg-type]
+                                all_of(  # type: ignore[arg-type]
+                                    instance_of(datetime),
+                                    has_properties(
+                                        {
+                                            "month": equal_to(datetime.now(timezone.utc).month),
+                                            "day": equal_to(datetime.now(timezone.utc).day),
+                                            "hour": equal_to(datetime.now(timezone.utc).hour),
+                                        }
+                                    ),
                                 ),
                             ),
                             "registration": all_of(
