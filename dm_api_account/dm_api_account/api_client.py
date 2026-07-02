@@ -28,10 +28,7 @@ from dm_api_account.configuration import Configuration
 from dm_api_account.api_response import ApiResponse, T as ApiResponseT
 import dm_api_account.models
 from dm_api_account import rest
-from dm_api_account.exceptions import (
-    ApiValueError,
-    ApiException,
-)
+from dm_api_account.exceptions import ApiValueError, ApiException
 
 RequestSerialized = Tuple[str, str, Dict[str, str], Optional[str], List[str]]
 
