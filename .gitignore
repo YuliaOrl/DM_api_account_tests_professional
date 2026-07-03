@@ -223,6 +223,8 @@ __marimo__/
 # OpenApi generator
 clients/http/schemas/
 openapi-generator-cli-7.23.0.jar
+# Служебная папка OpenAPI Generator (создаётся автоматически)
+dm_api_account/.openapi-generator/
 
 # code generator
 model.py
