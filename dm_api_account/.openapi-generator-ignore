@@ -8,7 +8,6 @@ docs/
 README.md
 setup.py
 setup.cfg
-pyproject.toml
 requirements.txt
 test-requirements.txt
 tox.ini
